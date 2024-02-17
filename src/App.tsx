@@ -1,38 +1,55 @@
 import * as React from "react"
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from "@chakra-ui/react"
-import { ColorModeSwitcher } from "./ColorModeSwitcher"
-import { Logo } from "./Logo"
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import GeneralLayout from "./layout/General";
+import MainPage from "./pages/MainPage";
+import LoginPage from "./pages/Auth/Login";
+import RegisterPage from "./pages/Auth/Register";
+import PrivateRoute from "./components/Private";
+import SneakersPage from "./pages/Sneakers/SneakersPage";
+import AddSneakers from "./pages/Sneakers/AddSneakers";
+import MyCart from "./pages/Cart/MyCart";
+
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <GeneralLayout />,
+    children: [
+      {
+        path: "/",
+        element: (
+          <MainPage />
+        ),
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "/sneakers",
+        children: [
+          {
+            path: "/sneakers",
+            element: <SneakersPage />
+          },
+          {
+            path: "/sneakers/add",
+            element: <PrivateRoute><AddSneakers /></PrivateRoute>
+          }
+        ]
+      },
+      {
+        path: "/my-cart",
+        element: <PrivateRoute><MyCart></MyCart></PrivateRoute>
+      }
+    ]
+  },
+]);
 
 export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
-    </Box>
-  </ChakraProvider>
+  <RouterProvider router={router}></RouterProvider>
 )
